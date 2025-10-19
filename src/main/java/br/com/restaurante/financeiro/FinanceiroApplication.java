@@ -1,4 +1,4 @@
-package br.com.restaurante.financeiro.financeiro;
+package br.com.restaurante.financeiro;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

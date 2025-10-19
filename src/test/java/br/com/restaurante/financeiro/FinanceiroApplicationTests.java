@@ -1,4 +1,4 @@
-package br.com.restaurante.financeiro.financeiro;
+package br.com.restaurante.financeiro;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
