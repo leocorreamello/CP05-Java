@@ -1,4 +1,4 @@
-package br.com.restaurante.financeiro.financeiro.config;
+package br.com.restaurante.financeiro.config;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
