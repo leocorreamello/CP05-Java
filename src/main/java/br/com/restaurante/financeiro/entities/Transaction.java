@@ -1,6 +1,7 @@
 package br.com.restaurante.financeiro.entities;
 
 import br.com.restaurante.financeiro.enums.PaymentMethod;
+import br.com.restaurante.financeiro.enums.TransactionCategory;
 import br.com.restaurante.financeiro.enums.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -32,7 +33,7 @@ public class Transaction {
 
     @Column(name="CATEGORY", nullable = false)
     @NotNull
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
     private TransactionCategory category;
 
     @Column(name="ACCOUNT", nullable = false)

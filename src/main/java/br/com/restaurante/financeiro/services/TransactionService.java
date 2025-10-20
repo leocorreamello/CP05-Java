@@ -1,7 +1,5 @@
 package br.com.restaurante.financeiro.services;
 
-import br.com.restaurante.financeiro.dto.transaction.CategoryCreateDTO;
-import br.com.restaurante.financeiro.dto.transaction.CategoryResponseDTO;
 import br.com.restaurante.financeiro.dto.transaction.TransactionCreateDTO;
 import br.com.restaurante.financeiro.dto.transaction.TransactionResponseDTO;
 import br.com.restaurante.financeiro.entities.Transaction;
@@ -53,16 +51,6 @@ public class TransactionService {
         return new TransactionResponseDTO();
     }
 
-    public CategoryResponseDTO createTransactionCategory(@Valid CategoryCreateDTO dto) {
-        // TODO: Implementar quando o repositório estiver pronto
-        // TransactionCategory category = new TransactionCategory();
-        // category.setName(dto.getName());
-        // TransactionCategory savedCategory = categoryRepository.save(category);
-        // return new CategoryResponseDTO(savedCategory.getId(), savedCategory.getName());
-
-        // Placeholder para compilar
-        return new CategoryResponseDTO();
-    }
 
     public TransactionResponseDTO findTransactionById(Long id) {
         // TODO: Implementar quando o repositório estiver pronto
@@ -93,7 +81,7 @@ public class TransactionService {
                 transaction.getType(),
                 transaction.getAmount(),
                 transaction.getPaymentMethod(),
-                transaction.getCategory().getName(),
+                transaction.getCategory().name(),
                 transaction.getAccount().getName(),
                 transaction.getDate(),
                 transaction.getDueDate(),
