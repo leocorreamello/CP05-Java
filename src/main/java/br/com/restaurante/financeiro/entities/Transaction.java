@@ -36,7 +36,7 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionCategory category;
 
-    @Column(name="ACCOUNT", nullable = false)
+    @JoinColumn(name="ACCOUNT_ID", nullable = false)
     @NotNull
     @ManyToOne
     private Account account;
