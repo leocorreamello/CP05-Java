@@ -4,7 +4,10 @@ import br.com.restaurante.financeiro.dto.transaction.TransactionCreateDTO;
 import br.com.restaurante.financeiro.dto.transaction.TransactionResponseDTO;
 import br.com.restaurante.financeiro.entities.Transaction;
 import br.com.restaurante.financeiro.enums.TransactionType;
+import br.com.restaurante.financeiro.repositories.AccountRepository;
+import br.com.restaurante.financeiro.repositories.TransactionRepository;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,19 +15,14 @@ import java.util.List;
 @Service
 public class TransactionService {
 
-    // TODO: Injetar os repositórios quando forem criados
-    // @Autowired
-    // private TransactionRepository transactionRepository;
-    // @Autowired
-    // private TransactionCategoryRepository categoryRepository;
-    // @Autowired
-    // private AccountRepository accountRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     public TransactionResponseDTO createTransaction(@Valid TransactionCreateDTO dto) {
         // TODO: Implementar a lógica completa quando os repositórios estiverem prontos
-        // 1. Buscar a categoria pelo nome (ou criar se não existir)
-        // TransactionCategory category = categoryRepository.findByName(dto.getCategoryName())
-        //         .orElseGet(() -> categoryRepository.save(new TransactionCategory(null, dto.getCategoryName())));
 
         // 2. Buscar a conta pelo nome
         // Account account = accountRepository.findByName(dto.getAccountName())
@@ -63,8 +61,8 @@ public class TransactionService {
     }
 
     public List<TransactionResponseDTO> findTransactions(TransactionType type, Long categoryId, Long accountId,
-                                                          String startDate, String endDate, Double minAmount,
-                                                          Double maxAmount, String paymentMethod) {
+                                                         String startDate, String endDate, Double minAmount,
+                                                         Double maxAmount, String paymentMethod) {
         // TODO: Implementar a lógica de filtros quando o repositório estiver pronto
         // List<Transaction> transactions = transactionRepository.findAll(); // ou usar Specification para filtros
         // return transactions.stream()
