@@ -48,4 +48,10 @@ public class TransactionController {
         return ResponseEntity.ok(transaction);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+        transactionService.deleteTransaction(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

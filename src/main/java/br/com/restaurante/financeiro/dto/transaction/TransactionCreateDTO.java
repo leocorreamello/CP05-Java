@@ -1,6 +1,7 @@
 package br.com.restaurante.financeiro.dto.transaction;
 
 import br.com.restaurante.financeiro.enums.PaymentMethod;
+import br.com.restaurante.financeiro.enums.TransactionCategory;
 import br.com.restaurante.financeiro.enums.TransactionType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -21,9 +22,9 @@ public class TransactionCreateDTO {
     @NotNull(message = "Payment method is required")
     private PaymentMethod paymentMethod;
 
-    @JsonProperty("category_name")
-    @NotBlank(message = "Category name is required")
-    private String categoryName;
+    @JsonProperty("category")
+    @NotNull(message = "Category is required")
+    private TransactionCategory category;
 
     @JsonProperty("account_name")
     @NotBlank(message = "Account name is required")
@@ -40,11 +41,11 @@ public class TransactionCreateDTO {
 
     public TransactionCreateDTO() {}
 
-    public TransactionCreateDTO(TransactionType type, Double amount, PaymentMethod paymentMethod, String categoryName, String accountName, String date, String dueDate, String description) {
+    public TransactionCreateDTO(TransactionType type, Double amount, PaymentMethod paymentMethod, TransactionCategory category, String accountName, String date, String dueDate, String description) {
         this.type = type;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
-        this.categoryName = categoryName;
+        this.category = category;
         this.accountName = accountName;
         this.date = date;
         this.dueDate = dueDate;
@@ -75,12 +76,10 @@ public class TransactionCreateDTO {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
+    public TransactionCategory getCategory() { return category; }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setCategory(TransactionCategory category) {
+        this.category = category;
     }
 
     public String getAccountName() {

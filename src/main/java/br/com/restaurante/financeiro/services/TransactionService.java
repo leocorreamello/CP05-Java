@@ -2,6 +2,7 @@ package br.com.restaurante.financeiro.services;
 
 import br.com.restaurante.financeiro.dto.transaction.TransactionCreateDTO;
 import br.com.restaurante.financeiro.dto.transaction.TransactionResponseDTO;
+import br.com.restaurante.financeiro.entities.Account;
 import br.com.restaurante.financeiro.entities.Transaction;
 import br.com.restaurante.financeiro.enums.TransactionType;
 import br.com.restaurante.financeiro.repositories.AccountRepository;
@@ -9,8 +10,9 @@ import br.com.restaurante.financeiro.repositories.TransactionRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @Service
 public class TransactionService {
@@ -21,56 +23,116 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Transactional
     public TransactionResponseDTO createTransaction(@Valid TransactionCreateDTO dto) {
-        // TODO: Implementar a lógica completa quando os repositórios estiverem prontos
 
-        // 2. Buscar a conta pelo nome
-        // Account account = accountRepository.findByName(dto.getAccountName())
-        //         .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + dto.getAccountName()));
+        Account account = accountRepository.findByName(dto.getAccountName())
+                 .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + dto.getAccountName()));
 
-        // 3. Criar a transação
-        // Transaction transaction = new Transaction();
-        // transaction.setType(dto.getType());
-        // transaction.setAmount(dto.getAmount());
-        // transaction.setPaymentMethod(dto.getPaymentMethod());
-        // transaction.setCategory(category);
-        // transaction.setAccount(account);
-        // transaction.setDate(dto.getDate());
-        // transaction.setDueDate(dto.getDueDate());
-        // transaction.setDescription(dto.getDescription());
+        if (!account.getActive()) {
+            throw new RuntimeException("Conta inativa: " + dto.getAccountName());
+        }
 
-        // 4. Salvar a transação
-        // Transaction savedTransaction = transactionRepository.save(transaction);
+        Transaction transaction = new Transaction();
+            transaction.setType(dto.getType());
+            transaction.setAmount(dto.getAmount());
+            transaction.setPaymentMethod(dto.getPaymentMethod());
+            transaction.setCategory(dto.getCategory());
+            transaction.setAccount(account);
+            transaction.setDate(dto.getDate());
+            transaction.setDueDate(dto.getDueDate());
+            transaction.setDescription(dto.getDescription());
 
-        // 5. Converter para DTO de resposta
-        // return convertToResponseDTO(savedTransaction);
+        BigDecimal currentBalance = account.getCurrentBalance();
+        BigDecimal transactionAmount = BigDecimal.valueOf(dto.getAmount());
 
-        // Placeholder para compilar
-        return new TransactionResponseDTO();
+        if (dto.getType() == TransactionType.INCOME) {
+            account.setCurrentBalance(currentBalance.add(transactionAmount));
+        } else if (dto.getType() == TransactionType.EXPENSE) {
+            account.setCurrentBalance(currentBalance.subtract(transactionAmount));
+        }
+
+        accountRepository.save(account);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        return convertToResponseDTO(savedTransaction);
     }
 
 
     public TransactionResponseDTO findTransactionById(Long id) {
-        // TODO: Implementar quando o repositório estiver pronto
-        // Transaction transaction = transactionRepository.findById(id)
-        //         .orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
-        // return convertToResponseDTO(transaction);
-
-        // Placeholder para compilar
-        return new TransactionResponseDTO();
+        Transaction transaction = transactionRepository.findById(id)
+                 .orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
+        return convertToResponseDTO(transaction);
     }
 
-    public List<TransactionResponseDTO> findTransactions(TransactionType type, Long categoryId, Long accountId,
-                                                         String startDate, String endDate, Double minAmount,
-                                                         Double maxAmount, String paymentMethod) {
-        // TODO: Implementar a lógica de filtros quando o repositório estiver pronto
-        // List<Transaction> transactions = transactionRepository.findAll(); // ou usar Specification para filtros
-        // return transactions.stream()
-        //         .map(this::convertToResponseDTO)
-        //         .collect(Collectors.toList());
+    @Transactional
+    public TransactionResponseDTO updateTransaction(Long id, @Valid TransactionCreateDTO dto) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
 
-        // Placeholder para compilar
-        return List.of();
+        Account newAccount = accountRepository.findAll().stream()
+                .filter(a -> a.getName().equals(dto.getAccountName()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + dto.getAccountName()));
+
+        if (!newAccount.getActive()) {
+            throw new RuntimeException("Conta inativa: " + dto.getAccountName());
+        }
+
+        Account account = transaction.getAccount();
+        BigDecimal oldAmount = BigDecimal.valueOf(transaction.getAmount());
+
+        if (transaction.getType() == TransactionType.INCOME) {
+            account.setCurrentBalance(account.getCurrentBalance().subtract(oldAmount));
+        } else if (transaction.getType() == TransactionType.EXPENSE) {
+            account.setCurrentBalance(account.getCurrentBalance().add(oldAmount));
+        }
+
+        transaction.setType(dto.getType());
+        transaction.setAmount(dto.getAmount());
+        transaction.setPaymentMethod(dto.getPaymentMethod());
+        transaction.setCategory(dto.getCategory());
+        transaction.setAccount(newAccount);
+        transaction.setDate(dto.getDate());
+        transaction.setDueDate(dto.getDueDate());
+        transaction.setDescription(dto.getDescription());
+
+        BigDecimal newAmount = BigDecimal.valueOf(dto.getAmount());
+
+        if (dto.getType() == TransactionType.INCOME) {
+            newAccount.setCurrentBalance(newAccount.getCurrentBalance().add(newAmount));
+        } else if (dto.getType() == TransactionType.EXPENSE) {
+            newAccount.setCurrentBalance(newAccount.getCurrentBalance().subtract(newAmount));
+        }
+
+        if (!account.getId().equals(newAccount.getId())) {
+            accountRepository.save(account);
+        }
+
+        accountRepository.save(newAccount);
+
+        Transaction updatedTransaction = transactionRepository.save(transaction);
+
+        return convertToResponseDTO(updatedTransaction);
+    }
+
+    @Transactional
+    public void deleteTransaction(Long id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
+
+        Account account = transaction.getAccount();
+        BigDecimal amount = BigDecimal.valueOf(transaction.getAmount());
+
+        if (transaction.getType() == TransactionType.INCOME) {
+            account.setCurrentBalance(account.getCurrentBalance().subtract(amount));
+        } else if (transaction.getType() == TransactionType.EXPENSE) {
+            account.setCurrentBalance(account.getCurrentBalance().add(amount));
+        }
+
+        accountRepository.save(account);
+
+        transactionRepository.delete(transaction);
     }
 
     private TransactionResponseDTO convertToResponseDTO(Transaction transaction) {
@@ -87,7 +149,4 @@ public class TransactionService {
         );
     }
 
-    public TransactionResponseDTO updateTransaction(Long id, @Valid TransactionCreateDTO dto) {
-        return null;
-    }
 }
