@@ -14,7 +14,6 @@ public class AccountType {
 
     @Column(name="TYPE_NAME", nullable = false, length = 50)
     @NotBlank
-    @Size(max = 50, message = "O nome do tipo de conta deve ter no máximo 50 caracteres.")
     private String name;
 
     public AccountType() {}

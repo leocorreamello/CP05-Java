@@ -22,18 +22,18 @@ public class GlobalExceptionHandler {
         Map<String, Object> errorResponse = new LinkedHashMap<>();
         errorResponse.put("timestamp", LocalDateTime.now());
         errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
-        errorResponse.put("error", "Erro de validação");
+        errorResponse.put("error", "Validation error");
 
         List<Map<String, String>> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> {
                     Map<String, String> fieldError = new HashMap<>();
-                    fieldError.put("campo", error.getField());
-                    fieldError.put("mensagem", error.getDefaultMessage());
+                    fieldError.put("field", error.getField());
+                    fieldError.put("message", error.getDefaultMessage());
                     return fieldError;
                 })
                 .collect(Collectors.toList());
 
-        errorResponse.put("detalhes", fieldErrors);
+        errorResponse.put("details", fieldErrors);
 
         return errorResponse;
     }
