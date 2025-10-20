@@ -5,6 +5,7 @@ import br.com.restaurante.financeiro.dto.transaction.TransactionResponseDTO;
 import br.com.restaurante.financeiro.entities.Account;
 import br.com.restaurante.financeiro.entities.Transaction;
 import br.com.restaurante.financeiro.enums.TransactionType;
+import br.com.restaurante.financeiro.exceptions.TransactionException;
 import br.com.restaurante.financeiro.repositories.AccountRepository;
 import br.com.restaurante.financeiro.repositories.TransactionRepository;
 import jakarta.validation.Valid;
@@ -27,10 +28,10 @@ public class TransactionService {
     public TransactionResponseDTO createTransaction(@Valid TransactionCreateDTO dto) {
 
         Account account = accountRepository.findByName(dto.getAccountName())
-                 .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + dto.getAccountName()));
+                 .orElseThrow(() -> new TransactionException("Conta não encontrada: " + dto.getAccountName()));
 
         if (!account.getActive()) {
-            throw new RuntimeException("Conta inativa: " + dto.getAccountName());
+            throw new TransactionException("Conta inativa: " + dto.getAccountName());
         }
 
         Transaction transaction = new Transaction();
@@ -61,22 +62,22 @@ public class TransactionService {
 
     public TransactionResponseDTO findTransactionById(Long id) {
         Transaction transaction = transactionRepository.findById(id)
-                 .orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
+                 .orElseThrow(() -> new TransactionException("Transação não encontrada com ID: " + id));
         return convertToResponseDTO(transaction);
     }
 
     @Transactional
     public TransactionResponseDTO updateTransaction(Long id, @Valid TransactionCreateDTO dto) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
+                .orElseThrow(() -> new TransactionException("Transação não encontrada com ID: " + id));
 
         Account newAccount = accountRepository.findAll().stream()
                 .filter(a -> a.getName().equals(dto.getAccountName()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + dto.getAccountName()));
+                .orElseThrow(() -> new TransactionException("Conta não encontrada: " + dto.getAccountName()));
 
         if (!newAccount.getActive()) {
-            throw new RuntimeException("Conta inativa: " + dto.getAccountName());
+            throw new TransactionException("Conta inativa: " + dto.getAccountName());
         }
 
         Account account = transaction.getAccount();
@@ -119,7 +120,7 @@ public class TransactionService {
     @Transactional
     public void deleteTransaction(Long id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
+                .orElseThrow(() -> new TransactionException("Transação não encontrada com ID: " + id));
 
         Account account = transaction.getAccount();
         BigDecimal amount = BigDecimal.valueOf(transaction.getAmount());

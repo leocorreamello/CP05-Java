@@ -4,6 +4,7 @@ import br.com.restaurante.financeiro.dto.account.AccountCreateDTO;
 import br.com.restaurante.financeiro.dto.account.AccountResponseDTO;
 import br.com.restaurante.financeiro.entities.Account;
 import br.com.restaurante.financeiro.enums.AccountType;
+import br.com.restaurante.financeiro.exceptions.AccountException;
 import br.com.restaurante.financeiro.repositories.AccountRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class AccountService {
     public AccountResponseDTO createAccount(@Valid AccountCreateDTO dto) {
         // Validar se já existe conta com o mesmo nome
         if (accountRepository.existsByName(dto.getName())) {
-            throw new RuntimeException("Já existe uma conta com o nome: " + dto.getName());
+            throw new AccountException("Já existe uma conta com o nome: " + dto.getName());
         }
 
         // Converter o tipo de String para Enum
@@ -33,7 +34,7 @@ public class AccountService {
         try {
             accountType = AccountType.valueOf(dto.getTypeName().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Tipo de conta inválido: " + dto.getTypeName());
+            throw new AccountException("Tipo de conta inválido: " + dto.getTypeName());
         }
 
         // Criar a conta
@@ -53,7 +54,7 @@ public class AccountService {
 
     public AccountResponseDTO findAccountById(Long id) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Conta não encontrada com ID: " + id));
+                .orElseThrow(() -> new AccountException("Conta não encontrada com ID: " + id));
         return convertToResponseDTO(account);
     }
 
@@ -75,11 +76,11 @@ public class AccountService {
     @Transactional
     public AccountResponseDTO updateAccount(Long id, @Valid AccountCreateDTO dto) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Conta não encontrada com ID: " + id));
+                .orElseThrow(() -> new AccountException("Conta não encontrada com ID: " + id));
 
         // Validar se o novo nome já existe em outra conta
         if (!account.getName().equals(dto.getName()) && accountRepository.existsByName(dto.getName())) {
-            throw new RuntimeException("Já existe uma conta com o nome: " + dto.getName());
+            throw new AccountException("Já existe uma conta com o nome: " + dto.getName());
         }
 
         // Converter o tipo de String para Enum
@@ -87,7 +88,7 @@ public class AccountService {
         try {
             accountType = AccountType.valueOf(dto.getTypeName().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Tipo de conta inválido: " + dto.getTypeName());
+            throw new AccountException("Tipo de conta inválido: " + dto.getTypeName());
         }
 
         // Atualizar os campos
@@ -105,7 +106,7 @@ public class AccountService {
     @Transactional
     public void deleteAccount(Long id) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Conta não encontrada com ID: " + id));
+                .orElseThrow(() -> new AccountException("Conta não encontrada com ID: " + id));
 
         // Soft delete - apenas desativa a conta
         account.setActive(false);
