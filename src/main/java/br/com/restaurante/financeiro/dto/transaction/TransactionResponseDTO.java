@@ -3,11 +3,13 @@ package br.com.restaurante.financeiro.dto.transaction;
 import br.com.restaurante.financeiro.enums.PaymentMethod;
 import br.com.restaurante.financeiro.enums.TransactionType;
 
+import java.math.BigDecimal;
+
 public class TransactionResponseDTO {
 
     private Long id;
     private TransactionType type;
-    private Double amount;
+    private BigDecimal amount;
     private PaymentMethod paymentMethod;
     private String categoryName;
     private String accountName;
@@ -17,7 +19,7 @@ public class TransactionResponseDTO {
 
     public TransactionResponseDTO() {}
 
-    public TransactionResponseDTO(Long id, TransactionType type, Double amount, PaymentMethod paymentMethod, String categoryName, String accountName, String date, String dueDate, String description) {
+    public TransactionResponseDTO(Long id, TransactionType type, BigDecimal amount, PaymentMethod paymentMethod, String categoryName, String accountName, String date, String dueDate, String description) {
         this.id = id;
         this.type = type;
         this.amount = amount;
@@ -45,11 +47,11 @@ public class TransactionResponseDTO {
         this.type = type;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -101,4 +103,3 @@ public class TransactionResponseDTO {
         this.description = description;
     }
 }
-

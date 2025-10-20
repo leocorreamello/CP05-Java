@@ -45,7 +45,7 @@ public class TransactionService {
             transaction.setDescription(dto.getDescription());
 
         BigDecimal currentBalance = account.getCurrentBalance();
-        BigDecimal transactionAmount = BigDecimal.valueOf(dto.getAmount());
+        BigDecimal transactionAmount = dto.getAmount();
 
         if (dto.getType() == TransactionType.INCOME) {
             account.setCurrentBalance(currentBalance.add(transactionAmount));
@@ -81,7 +81,7 @@ public class TransactionService {
         }
 
         Account account = transaction.getAccount();
-        BigDecimal oldAmount = BigDecimal.valueOf(transaction.getAmount());
+        BigDecimal oldAmount = transaction.getAmount();
 
         if (transaction.getType() == TransactionType.INCOME) {
             account.setCurrentBalance(account.getCurrentBalance().subtract(oldAmount));
@@ -98,7 +98,7 @@ public class TransactionService {
         transaction.setDueDate(dto.getDueDate());
         transaction.setDescription(dto.getDescription());
 
-        BigDecimal newAmount = BigDecimal.valueOf(dto.getAmount());
+        BigDecimal newAmount = dto.getAmount();
 
         if (dto.getType() == TransactionType.INCOME) {
             newAccount.setCurrentBalance(newAccount.getCurrentBalance().add(newAmount));
@@ -123,7 +123,7 @@ public class TransactionService {
                 .orElseThrow(() -> new TransactionException("Transação não encontrada com ID: " + id));
 
         Account account = transaction.getAccount();
-        BigDecimal amount = BigDecimal.valueOf(transaction.getAmount());
+        BigDecimal amount = transaction.getAmount();
 
         if (transaction.getType() == TransactionType.INCOME) {
             account.setCurrentBalance(account.getCurrentBalance().subtract(amount));

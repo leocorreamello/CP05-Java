@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
+
 public class TransactionCreateDTO {
 
     @NotNull(message = "Transaction type is required")
@@ -16,7 +18,7 @@ public class TransactionCreateDTO {
 
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")
-    private Double amount;
+    private BigDecimal amount;
 
     @JsonProperty("payment_method")
     @NotNull(message = "Payment method is required")
@@ -41,7 +43,7 @@ public class TransactionCreateDTO {
 
     public TransactionCreateDTO() {}
 
-    public TransactionCreateDTO(TransactionType type, Double amount, PaymentMethod paymentMethod, TransactionCategory category, String accountName, String date, String dueDate, String description) {
+    public TransactionCreateDTO(TransactionType type, BigDecimal amount, PaymentMethod paymentMethod, TransactionCategory category, String accountName, String date, String dueDate, String description) {
         this.type = type;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
@@ -60,11 +62,11 @@ public class TransactionCreateDTO {
         this.type = type;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

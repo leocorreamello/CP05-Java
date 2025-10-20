@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "transactions")
 public class Transaction {
@@ -24,7 +26,7 @@ public class Transaction {
 
     @Column(name = "AMOUNT", nullable = false, precision = 19, scale = 4)
     @NotNull
-    private Double amount;
+    private BigDecimal amount;
 
     @Column(name = "PAYMENT_METHOD", nullable = false)
     @NotNull
@@ -53,7 +55,7 @@ public class Transaction {
 
     public Transaction() {}
 
-    public Transaction(Long id, TransactionType type, Double amount, PaymentMethod paymentMethod, Account account, TransactionCategory category, String date, String dueDate, String description) {
+    public Transaction(Long id, TransactionType type, BigDecimal amount, PaymentMethod paymentMethod, Account account, TransactionCategory category, String date, String dueDate, String description) {
         this.id = id;
         this.type = type;
         this.amount = amount;
@@ -81,11 +83,11 @@ public class Transaction {
         this.type = type;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
