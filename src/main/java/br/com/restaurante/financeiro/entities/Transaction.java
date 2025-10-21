@@ -19,7 +19,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "TYPE", nullable = false)
+    @Column(name = "TRANSACTION_TYPE", nullable = false)
     @NotNull
     @Enumerated(EnumType.STRING)
     private TransactionType type;
@@ -43,7 +43,7 @@ public class Transaction {
     @ManyToOne
     private Account account;
 
-    @Column(name = "DATE", nullable = false)
+    @Column(name = "TRANSACTION_DATE", nullable = false)
     @NotNull
     private String date;
 
