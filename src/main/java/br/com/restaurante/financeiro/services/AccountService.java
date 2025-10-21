@@ -29,18 +29,10 @@ public class AccountService {
             throw new AccountException("Já existe uma conta com o nome: " + dto.getName());
         }
 
-        // Converter o tipo de String para Enum
-        AccountType accountType;
-        try {
-            accountType = AccountType.valueOf(dto.getTypeName().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new AccountException("Tipo de conta inválido: " + dto.getTypeName());
-        }
-
         // Criar a conta
         Account account = new Account();
         account.setName(dto.getName());
-        account.setType(accountType);
+        account.setType(dto.getTypeName());
         account.setPaymentMethods(dto.getPaymentMethods() != null ? dto.getPaymentMethods() : new ArrayList<>());
         account.setCurrentBalance(dto.getInitialBalance() != null ? dto.getInitialBalance() : BigDecimal.ZERO);
         account.setActive(true);
@@ -83,17 +75,9 @@ public class AccountService {
             throw new AccountException("Já existe uma conta com o nome: " + dto.getName());
         }
 
-        // Converter o tipo de String para Enum
-        AccountType accountType;
-        try {
-            accountType = AccountType.valueOf(dto.getTypeName().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new AccountException("Tipo de conta inválido: " + dto.getTypeName());
-        }
-
         // Atualizar os campos
         account.setName(dto.getName());
-        account.setType(accountType);
+        account.setType(dto.getTypeName());
         if (dto.getPaymentMethods() != null) {
             account.setPaymentMethods(dto.getPaymentMethods());
         }
@@ -117,7 +101,7 @@ public class AccountService {
         return new AccountResponseDTO(
                 account.getId(),
                 account.getName(),
-                account.getType().name(),
+                account.getType(),
                 account.getPaymentMethods(),
                 account.getCurrentBalance(),
                 account.getCreatedAt(),

@@ -1,5 +1,6 @@
 package br.com.restaurante.financeiro.dto.account;
 
+import br.com.restaurante.financeiro.enums.AccountType;
 import br.com.restaurante.financeiro.enums.PaymentMethod;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -16,8 +17,8 @@ public class AccountCreateDTO {
     private String name;
 
     @JsonProperty("type_name")
-    @NotBlank(message = "Account type is required")
-    private String typeName;
+    @NotNull(message = "Account type is required")
+    private AccountType typeName;
 
     @JsonProperty("payment_methods")
     private List<PaymentMethod> paymentMethods;
@@ -27,7 +28,7 @@ public class AccountCreateDTO {
 
     public AccountCreateDTO() {}
 
-    public AccountCreateDTO(String name, String typeName, List<PaymentMethod> paymentMethods, BigDecimal initialBalance) {
+    public AccountCreateDTO(String name, AccountType typeName, List<PaymentMethod> paymentMethods, BigDecimal initialBalance) {
         this.name = name;
         this.typeName = typeName;
         this.paymentMethods = paymentMethods;
@@ -42,11 +43,11 @@ public class AccountCreateDTO {
         this.name = name;
     }
 
-    public String getTypeName() {
+    public AccountType getTypeName() {
         return typeName;
     }
 
-    public void setTypeName(String typeName) {
+    public void setTypeName(AccountType typeName) {
         this.typeName = typeName;
     }
 

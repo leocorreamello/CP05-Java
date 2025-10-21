@@ -41,9 +41,8 @@ public class Account {
     @NotNull
     private BigDecimal currentBalance = BigDecimal.ZERO;
 
-    @Column(name="TRANSACTIONS")
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Transaction> transactions;
+    private List<Transaction> transactions = new ArrayList<>();
 
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
     @CreationTimestamp

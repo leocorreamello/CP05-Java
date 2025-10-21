@@ -1,5 +1,6 @@
 package br.com.restaurante.financeiro.dto.account;
 
+import br.com.restaurante.financeiro.enums.AccountType;
 import br.com.restaurante.financeiro.enums.PaymentMethod;
 
 import java.math.BigDecimal;
@@ -10,7 +11,7 @@ public class AccountResponseDTO {
 
     private Long id;
     private String name;
-    private String typeName;
+    private AccountType typeName;
     private List<PaymentMethod> paymentMethods;
     private BigDecimal currentBalance;
     private LocalDateTime createdAt;
@@ -19,7 +20,7 @@ public class AccountResponseDTO {
 
     public AccountResponseDTO() {}
 
-    public AccountResponseDTO(Long id, String name, String typeName, List<PaymentMethod> paymentMethods, BigDecimal currentBalance, LocalDateTime createdAt, LocalDateTime updatedAt, Boolean isActive) {
+    public AccountResponseDTO(Long id, String name, AccountType typeName, List<PaymentMethod> paymentMethods, BigDecimal currentBalance, LocalDateTime createdAt, LocalDateTime updatedAt, Boolean isActive) {
         this.id = id;
         this.name = name;
         this.typeName = typeName;
@@ -46,11 +47,11 @@ public class AccountResponseDTO {
         this.name = name;
     }
 
-    public String getTypeName() {
+    public AccountType getTypeName() {
         return typeName;
     }
 
-    public void setTypeName(String typeName) {
+    public void setTypeName(AccountType typeName) {
         this.typeName = typeName;
     }
 
